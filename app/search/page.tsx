@@ -1,6 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
-import {LandMap} from "@/components/land-map";
+import LandMap from "@/components/land-map";
 type Listing={id:string;title:string;description:string|null;category:string;state:string;district:string|null;city_or_village:string|null;area_value:number;area_unit:string;asking_price_inr:number|null;record_status:string;created_at:string};
 const money=(n:number)=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:0}).format(n);
 const categories=[{label:"All land types",value:""},{label:"Agricultural Land",value:"agricultural"},{label:"Industrial Land",value:"industrial"},{label:"Residential Land",value:"residential"},{label:"Commercial Land",value:"commercial"}];
