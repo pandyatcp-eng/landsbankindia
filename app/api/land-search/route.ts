@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const params = request.nextUrl.searchParams;
-    const q = (params.get("q") || "").trim();
+    const q = (params.get("q") || "").trim().replace(/[,%()]/g, " ").replace(/\s+/g, " ").slice(0, 120);
     const category = params.get("category") || "";
     const state = params.get("state") || "";
     const district = params.get("district") || "";
