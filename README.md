@@ -1,34 +1,30 @@
 # LandsbankIndia 2.0
 
-Land-first discovery and intelligence platform. India-first architecture, designed to support multilingual experiences and web/mobile clients over time.
+India-first, land-only discovery and intelligence platform.
 
-## Current starter
-- Next.js App Router + React + TypeScript
-- Responsive landing page
-- Search interface with clearly labelled illustrative demo listings and client-side filters
-- Tailwind CSS v4
+## Stack
+- Next.js 15 App Router, React 19, TypeScript
+- Supabase Auth + PostgreSQL + PostGIS
+- OpenAI API for natural-language land-search interpretation
+- Google Maps search embed for location preview
 
-## Run locally
-1. Install Node.js 20 or later.
-2. Run `npm install`.
-3. Run `npm run dev`.
-4. Open `http://localhost:3000`.
-
-## Current routes
+## Routes
 - `/` — public landing page
-- `/search` — search UI using sample data only
+- `/search` — database-backed search, AI query interpretation and map preview
+- `/login` — Supabase email/password sign-in and registration
+- `/dashboard` — authenticated user's listing workspace
+- `/list-land` — authenticated land listing submission (pending review)
+- `/admin` — admin-only moderation overview
 
-## Important status
-Search results currently use demo data. No live property database, map provider, authentication, AI model, valuation service, or legal-record integration is connected yet. Do not present demo listings as real properties. Title/legal checks and valuation outputs will require independent professional verification.
+## Setup
+1. Install Node.js 20 or later.
+2. Copy `.env.example` to `.env.local`.
+3. Create a Supabase project and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+4. Run `database/schema.sql` in Supabase SQL Editor, then run `database/phase3-security.sql`.
+5. Add `OPENAI_API_KEY` on the server to enable AI search interpretation.
+6. Run `npm install` and `npm run dev`.
 
-## Planned implementation phases
-1. Core UI and responsive navigation
-2. Authentication, user roles and profiles
-3. Land listing database, moderation and document uploads
-4. Search API, filters, geospatial queries and maps
-5. AI assistant and document intelligence with human review
-6. Buyer/seller/investor workflows, admin tools, audit logs and security
-7. Android/iOS client and multilingual rollout
+Never expose a Supabase service-role key in browser code. Never commit real keys into GitHub. Review and test SQL policies in staging before production. The initial database schema and RLS policies are a foundation, not a substitute for a security review.
 
-## Security
-Never commit API keys, passwords, private land documents, or personal data. Use environment variables and server-side access controls for integrations.
+## Current limitations
+A Supabase project must be created and environment variables configured before authentication, listing storage and database search can work. An OpenAI API key is required for AI query interpretation. Map preview is an approximate Google Maps search embed, not a surveyed land boundary. AI does not certify title, legal status, valuation or investment returns. Listings require independent document verification and human moderation.
