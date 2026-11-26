@@ -48,3 +48,31 @@ create policy "profile_insert_own" on public.profiles for insert with check (aut
 
 -- Optional: set an initial admin role manually after verifying the account UUID:
 -- update public.profiles set account_roles = array['buyer','admin'] where id = 'YOUR_AUTH_USER_UUID';
+
+
+-- New profiles always start with the basic buyer role; users cannot self-assign admin.
+create or replace function public.set_default_profile_role()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  new.account_roles := array['buyer']::text[];
+  return new;
+end;
+$$;
+drop trigger if exists set_profile_default_role on public.profiles;
+create trigger set_profile_default_role before insert on public.profiles
+for each row execute function public.set_default_profile_role();
+
+-- Listing owners cannot publish or approve their own listings by changing status directly.
+create or replace function public.protect_listing_moderation_status()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is not null and auth.uid() = old.owner_id and not public.is_admin() then
+    new.status := old.status;
+  end if;
+  new.updated_at := now();
+  return new;
+end;
+$$;
+drop trigger if exists protect_listing_status on public.land_listings;
+create trigger protect_listing_status before update on public.land_listings
+for each row execute function public.protect_listing_moderation_status();
